@@ -133,6 +133,10 @@ int main()
     glm::mat4 view = camera.GetViewMatrix();
     
     std::cout << GLFW_KEY_LAST << std::endl;
+
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+    //glFrontFace(GL_CW);
     
     // render loop
     while (!glfwWindowShouldClose(window))
@@ -143,7 +147,7 @@ int main()
         // projection matrix
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f, 100.0f);
         // render
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
         // compute MVP Matrix

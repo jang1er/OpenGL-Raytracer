@@ -1,12 +1,16 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 #include <common/InputControl/InputController.hpp>
 #include <common/InputControl/IKeyboardListener.hpp>
 #include <common/InputControl/IMousePosListener.hpp>
 #include <common/InputControl/IScrollListener.hpp>
+#include <glm/gtx/string_cast.hpp>
+
 
 
 const float YAW = 0.0f;
@@ -49,11 +53,13 @@ class Camera : public IKeyboardListener, public IMousePosListener {
         void enable(){
             InputController::addKeyBoardListener(this, NOTIFY_ON_PRESS | NOTIFY_ON_RELEASE);
             InputController::addMousePosListener(this);
+            glfwSetInputMode(m_ContextWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
 
         void disable(){
             InputController::removeKeyBoardListener(this, NOTIFY_ON_PRESS | NOTIFY_ON_RELEASE);
             InputController::removeMousePosListener(this);
+            glfwSetInputMode(m_ContextWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         }
 
         glm::mat4 GetViewMatrix(){
@@ -61,8 +67,14 @@ class Camera : public IKeyboardListener, public IMousePosListener {
             float delta = static_cast<float>(time - m_LastTime);
             m_LastTime = time;
 
-            // calculate camera position
-            m_cameraPos += m_movementVec * MovementSpeed * delta;
+            //normalize movement vector only if it is not zero
+            glm::vec3 moveDirection = glm::vec3(0.0f);
+            if(!glm::all(glm::equal(glm::vec3(0.0f),m_movementVec))){
+                moveDirection = glm::normalize(m_movementVec.x * m_Front + m_movementVec.y * m_Up + m_movementVec.z * m_Right);
+                m_cameraPos += moveDirection * MovementSpeed * delta;
+                std::cout << "Front:" << glm::to_string(m_Front) << std::endl;
+                std::cout << "Pos:" << glm::to_string(m_cameraPos) << std::endl;
+            }
 
 
             m_ViewMatrix = glm::lookAt(m_cameraPos, m_cameraPos + m_Front, m_Up);
@@ -70,7 +82,7 @@ class Camera : public IKeyboardListener, public IMousePosListener {
         }
 
         void HandleKey(int key, int scancode, int action, int mods) override {
-            if(action == 2)return; // skip repeat Keys
+            std::cout << key << std::endl;
             switch(key){
                 case GLFW_KEY_W:
                     m_movementVec.x += action ? 1 : -1;
