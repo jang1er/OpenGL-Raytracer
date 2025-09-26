@@ -72,8 +72,6 @@ class Camera : public IKeyboardListener, public IMousePosListener {
             if(!glm::all(glm::equal(glm::vec3(0.0f),m_movementVec))){
                 moveDirection = glm::normalize(m_movementVec.x * m_Front + m_movementVec.y * m_Up + m_movementVec.z * m_Right);
                 m_cameraPos += moveDirection * MovementSpeed * delta;
-                std::cout << "Front:" << glm::to_string(m_Front) << std::endl;
-                std::cout << "Pos:" << glm::to_string(m_cameraPos) << std::endl;
             }
 
 
@@ -82,7 +80,6 @@ class Camera : public IKeyboardListener, public IMousePosListener {
         }
 
         void HandleKey(int key, int scancode, int action, int mods) override {
-            std::cout << key << std::endl;
             switch(key){
                 case GLFW_KEY_W:
                     m_movementVec.x += action ? 1 : -1;
