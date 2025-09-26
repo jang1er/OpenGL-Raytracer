@@ -17,7 +17,7 @@ file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
 add_executable(OpenGL_Raytracer 
     main.cpp
     vendor/glad/src/glad.c
-
+    vendor/stb_image/stb_image.cpp # compile to get header file
     # src files
     ${SRC_FILES}
 
@@ -34,7 +34,9 @@ add_executable(OpenGL_Raytracer
     )
 
 target_include_directories(OpenGL_Raytracer SYSTEM PRIVATE "vendor/glm" "vendor/glad/include" "vendor/glfw/include" "vendor/imgui" "vendor/imgui/backends")
-target_include_directories(OpenGL_Raytracer PUBLIC "src")
+target_include_directories(OpenGL_Raytracer
+        PUBLIC "src"
+        PRIVATE "vendor/stb_image")
 
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/assimp)

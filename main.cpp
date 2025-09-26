@@ -17,6 +17,7 @@
 
 #include "common/Shaders/shader.hpp"
 #include "common/Camera/camera.hpp"
+#include "common/Textures/TextureLoader.hpp"
 
 using namespace glm;
 
@@ -69,46 +70,21 @@ int main()
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices[] = {
-        // Positionen (x, y, z)
-        -0.5f, -0.5f, -0.5f, // 0
-        0.5f, -0.5f, -0.5f, // 1
-        0.5f,  0.5f, -0.5f, // 2
-        -0.5f,  0.5f, -0.5f, // 3
-        -0.5f, -0.5f,  0.5f, // 4
-        0.5f, -0.5f,  0.5f, // 5
-        0.5f,  0.5f,  0.5f, // 6
-        -0.5f,  0.5f,  0.5f  // 7
+        // positions          // colors           // texture coords
+         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
     };
-    unsigned int indices[] = {  // note that we start from 0!
-        // Rückseite
-        0, 1, 2,
-        2, 3, 0,
-
-        // Vorderseite
-        4, 5, 6,
-        6, 7, 4,
-
-        // Linke Seite
-        4, 0, 3,
-        3, 7, 4,
-
-        // Rechte Seite
-        1, 5, 6,
-        6, 2, 1,
-
-        // Unterseite
-        4, 5, 1,
-        1, 0, 4,
-
-        // Oberseite
-        3, 2, 6,
-        6, 7, 3
+    unsigned int indices[] = {  
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
     };
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -117,12 +93,21 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    // texture coord attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+    GLuint textureID = TextureLoader::loadTexture2D("ressources/Textures/wooden_crate.png");
 
 
     // uncomment this call to draw in wireframe polygons.
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // create default camera
     Camera camera = Camera(window);
@@ -162,6 +147,7 @@ int main()
         //send MVP to shader
         programShader.setMat4Float("MVP", MVP);
 
+        glBindTexture(GL_TEXTURE_2D, textureID);
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         glDrawElements(GL_TRIANGLES, sizeof(indices) / 3, GL_UNSIGNED_INT, 0);
