@@ -19,6 +19,8 @@
 #include "common/Camera/camera.hpp"
 #include "common/Textures/TextureLoader.hpp"
 
+#include "common/Objects/Model.hpp"
+
 using namespace glm;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -43,7 +45,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OopenGL Simple Raytracer", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "OpenGL Simple Raytracer", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -65,7 +67,7 @@ int main()
     InputController::init(window);
 
 
-    Shader programShader = Shader("ressources/Shaders/simple.vert", "ressources/Shaders/simple.frag");
+    Shader programShader = Shader("ressources/Shaders/texture.vert", "ressources/Shaders/texture.frag");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -104,6 +106,7 @@ int main()
     glEnableVertexAttribArray(2);
 
     GLuint textureID = TextureLoader::loadTexture2D("ressources/Textures/wooden_crate.png");
+    Model ourModel("ressources/Models/backpack/backpack.obj");
 
 
     // uncomment this call to draw in wireframe polygons.
@@ -116,12 +119,13 @@ int main()
     
     // view matrix
     glm::mat4 view = camera.GetViewMatrix();
+    glm::mat4 projection;
+    glm::mat4 model;
     
-    std::cout << GLFW_KEY_LAST << std::endl;
-
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
-    //glFrontFace(GL_CW);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+    glEnable(GL_DEPTH_TEST);
     
     // render loop
     while (!glfwWindowShouldClose(window))
@@ -130,27 +134,32 @@ int main()
         processInput(window);
         
         // projection matrix
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(45.0f), static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f, 100.0f);
         // render
         glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
         
         // compute MVP Matrix
         view = camera.GetViewMatrix();
-        //std::cout << glm::to_string(view) << std::endl;
-        glm::mat4 MVP = projection * view;
+        model = glm::mat4(1.0f);
+        
 
 
         // draw our first triangle
         programShader.use();
 
         //send MVP to shader
-        programShader.setMat4Float("MVP", MVP);
+        programShader.setMat4Float("model", model);
+        programShader.setMat4Float("view", view);
+        programShader.setMat4Float("projection", projection);
 
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
-        glDrawElements(GL_TRIANGLES, sizeof(indices) / 3, GL_UNSIGNED_INT, 0);
+        ourModel.Draw(programShader);
+
+        //glBindTexture(GL_TEXTURE_2D, textureID);
+        //glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+        ////glDrawArrays(GL_TRIANGLES, 0, 6);
+        //glDrawElements(GL_TRIANGLES, sizeof(indices) / 3, GL_UNSIGNED_INT, 0);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(window);
@@ -163,6 +172,7 @@ int main()
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     programShader.destroy();
+    TextureLoader::deleteTexture(textureID);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     glfwTerminate();
