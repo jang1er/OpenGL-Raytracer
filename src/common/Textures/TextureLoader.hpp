@@ -15,7 +15,7 @@ class TextureLoader{
     /// @param minFilter 
     /// @param magFilter 
     /// @return texture ID of loaded image
-    static GLuint loadTexture2D(const std::string &path,
+    static GLuint loadTexture2D(const std::string& path,
                                 bool flipVertically = true,
                                 GLint wrapS = GL_REPEAT,
                                 GLint wrapT = GL_REPEAT,

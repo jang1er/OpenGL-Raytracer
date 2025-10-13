@@ -17,7 +17,7 @@
 
 #include "common/Shaders/shader.hpp"
 #include "common/Camera/camera.hpp"
-#include "common/Textures/TextureLoader.hpp"
+#include "common/Textures/TextureManager.hpp"
 
 #include "common/Objects/Model.hpp"
 
@@ -105,8 +105,9 @@ int main()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    GLuint textureID = TextureLoader::loadTexture2D("ressources/Textures/wooden_crate.png");
-    Model ourModel("ressources/Models/backpack/backpack.obj");
+    auto textureManager = std::make_shared<TextureManager>();
+
+    Model ourModel(textureManager, "ressources/Models/backpack/backpack.obj");
 
 
     // uncomment this call to draw in wireframe polygons.
@@ -143,7 +144,8 @@ int main()
         // compute MVP Matrix
         view = camera.GetViewMatrix();
         model = glm::mat4(1.0f);
-        
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
 
 
         // draw our first triangle
@@ -172,7 +174,7 @@ int main()
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     programShader.destroy();
-    TextureLoader::deleteTexture(textureID);
+    textureManager->Clear();
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     glfwTerminate();

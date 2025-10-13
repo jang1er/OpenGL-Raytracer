@@ -3,7 +3,9 @@
 
 enum TextureType {
     DIFFUSE,
-    SPECULAR
+    SPECULAR,
+    NORMAL,
+    ROUGHNESS
 };
 
 
@@ -11,6 +13,8 @@ inline std::string TextureTypeToString(TextureType type) {
     switch (type) {
         case DIFFUSE:  return "texture_diffuse";
         case SPECULAR: return "texture_specular";
+        case NORMAL: return "texture_normal";
+        case ROUGHNESS: return "texture_roughness";
         default:       return "texture_unknown";
     }
 }

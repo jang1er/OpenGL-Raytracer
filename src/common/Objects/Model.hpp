@@ -2,17 +2,19 @@
 #define MODEL_H
 
 #include <vector>
+#include <memory>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <common/Shaders/shader.hpp>
 #include <common/Objects/Mesh.hpp>
 
-#include <common/Textures/TextureLoader.hpp>
+#include <common/Textures/TextureManager.hpp>
 
 class Model {
     public:
-        Model(std::string path){
+        Model(std::shared_ptr<TextureManager> texManager, std::string path) : textureManager(std::move(texManager))
+        {
             loadModel(path);
         }
         void Draw(Shader &shader);
@@ -21,6 +23,7 @@ class Model {
         //model data
         std::vector<Mesh> meshes;
         std::string directory;
+        std::shared_ptr<TextureManager> textureManager;
 
         /// @brief 
         /// @param path 

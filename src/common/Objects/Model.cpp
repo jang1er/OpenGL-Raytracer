@@ -104,7 +104,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
         mat->GetTexture(type, i, &str);
         Texture texture;
         std::string texturePath = directory + '/' + std::string(str.C_Str()); 
-        texture.id = TextureLoader::loadTexture2D(texturePath);
+        texture.id = textureManager->GetTexture2D(texturePath);
         texture.type = typeName;
         texture.path = texturePath;
         textures.push_back(texture);
