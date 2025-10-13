@@ -5,22 +5,8 @@
 #include <vector>
 
 #include "common/Shaders/shader.hpp"
-
-enum TextureType {
-    DIFFUSE,
-    SPECULAR
-};
-
-struct Vertex {
-    glm::vec3 Position;
-    glm::vec3 Normal;
-    glm::vec2 TexCoords;
-};
-
-struct Texture {
-    unsigned int id;
-    TextureType type;
-};
+#include "common/Primitives/Vertex.hpp"
+#include "common/Primitives/Texture.hpp"
 
 class Mesh {
     public:

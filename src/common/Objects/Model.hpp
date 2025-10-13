@@ -8,6 +8,8 @@
 #include <common/Shaders/shader.hpp>
 #include <common/Objects/Mesh.hpp>
 
+#include <common/Textures/TextureLoader.hpp>
+
 class Model {
     public:
         Model(std::string path){
@@ -20,10 +22,27 @@ class Model {
         std::vector<Mesh> meshes;
         std::string directory;
 
+        /// @brief 
+        /// @param path 
         void loadModel(std::string path);
+
+        /// @brief 
+        /// @param node 
+        /// @param scene 
         void processNode(aiNode* node, const aiScene* scene);
+
+        /// @brief 
+        /// @param mesh 
+        /// @param scene 
+        /// @return 
         Mesh processMesh(aiMesh* mesh, const aiScene* scene);
-        std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+
+        /// @brief 
+        /// @param mat 
+        /// @param type 
+        /// @param typeName 
+        /// @return 
+        std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, TextureType typeName);
 };
 
 #endif
