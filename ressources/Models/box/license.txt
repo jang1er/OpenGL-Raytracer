@@ -1,0 +1,11 @@
+Model Information:
+* title:	Cardboard box
+* source:	https://sketchfab.com/3d-models/cardboard-box-c03fd62713a14760b187defa6ad79c6e
+* author:	Nata Gabbiano (https://sketchfab.com/natagabbiano)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Cardboard box" (https://sketchfab.com/3d-models/cardboard-box-c03fd62713a14760b187defa6ad79c6e) by Nata Gabbiano (https://sketchfab.com/natagabbiano) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
