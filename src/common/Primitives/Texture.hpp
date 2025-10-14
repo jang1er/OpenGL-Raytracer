@@ -21,6 +21,7 @@ inline std::string TextureTypeToString(TextureType type) {
 
 struct Texture {
     unsigned int id;
+    GLuint handle;
     TextureType type;
     std::string path;
 };

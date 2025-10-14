@@ -1,6 +1,6 @@
 #include <common/Textures/TextureManager.hpp>
 
-unsigned int TextureManager::GetTexture2D(const std::string& path,
+std::pair<GLuint64, GLuint> TextureManager::GetTexture2D(const std::string& path,
                                 bool flipVertically,
                                 GLint wrapS,
                                 GLint wrapT,
@@ -9,19 +9,19 @@ unsigned int TextureManager::GetTexture2D(const std::string& path,
     // lookup in texture map
     auto iterator = textureMap.find(path);
     if(iterator != textureMap.end()){
-        std::cout << "Texture is already loaded" << std::endl;
+        //std::cout << "Texture is already loaded" << std::endl;
         return iterator->second;
     }
     std::cout << "Loading texture from file" << std::endl;
     // Load the texture from File
-    unsigned int textureID = TextureLoader::loadTexture2D(path, flipVertically, wrapS, wrapT,  minFilter, magFilter);
+    auto textureID = TextureLoader::loadTexture2DBindless(path, flipVertically, wrapS, wrapT,  minFilter, magFilter);
     textureMap[path] = textureID;
     return textureID;
 }
 
 void TextureManager::Clear(){
-    for(auto& [path, id] : textureMap){
-        TextureLoader::deleteTexture(id);
+    for(auto& [path, pair] : textureMap){
+        TextureLoader::deleteTexture(pair.second);
     }
     textureMap.clear();
 }

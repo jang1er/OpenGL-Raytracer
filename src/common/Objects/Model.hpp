@@ -8,6 +8,7 @@
 #include <assimp/postprocess.h>
 #include <common/Shaders/shader.hpp>
 #include <common/Objects/Mesh.hpp>
+#include <chrono>
 
 #include <common/Textures/TextureManager.hpp>
 

@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <string>
 #include <iostream>
+#include <utility>
 
 #include <common/Textures/TextureLoader.hpp>
 
@@ -20,8 +21,8 @@ class TextureManager {
         /// @param wrapT 
         /// @param minFilter 
         /// @param magFilter 
-        /// @return GLuint texture ID
-        unsigned int GetTexture2D(const std::string& path,
+        /// @return bindless texture handle id
+        std::pair<GLuint64, GLuint> GetTexture2D(const std::string& path,
                                 bool flipVertically = true,
                                 GLint wrapS = GL_REPEAT,
                                 GLint wrapT = GL_REPEAT,
@@ -33,7 +34,7 @@ class TextureManager {
 
     private:
         /// @brief Contains all already loaded textures by their pathname
-        std::unordered_map<std::string, unsigned int> textureMap;
+        std::unordered_map<std::string, std::pair<GLuint64, GLuint>> textureMap;
 };
 
 #endif

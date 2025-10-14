@@ -1,5 +1,6 @@
 #include "Model.hpp"
 
+
 void Model::Draw(Shader &shader){
     for(unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(shader);
@@ -10,7 +11,6 @@ void Model::loadModel(std::string path){
 
     Assimp::Importer import;
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-
     if( !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
         std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
         return;
@@ -90,7 +90,6 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, SPECULAR);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
-
     return Mesh(vertices, indices, textures);
 }  
 
@@ -103,8 +102,10 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
         aiString str;
         mat->GetTexture(type, i, &str);
         Texture texture;
-        std::string texturePath = directory + '/' + std::string(str.C_Str()); 
-        texture.id = textureManager->GetTexture2D(texturePath);
+        std::string texturePath = directory + '/' + std::string(str.C_Str());
+        std::pair<GLuint64, GLuint> textureRef = textureManager->GetTexture2D(texturePath);
+        texture.id = textureRef.second; // gl id of texture
+        texture.handle = textureRef.first; // gl bindless handle of texture
         texture.type = typeName;
         texture.path = texturePath;
         textures.push_back(texture);

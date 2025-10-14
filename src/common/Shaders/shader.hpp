@@ -120,6 +120,13 @@ class Shader{
             glUniform1f(glGetUniformLocation(ID, name.c_str()), value); 
         }
 
+        /// @brief Sets a Uniform GLuint64 in the shader
+        /// @param name Name of the Uniform
+        /// @param value Value to be set
+        void setUInt64(const std::string& name, GLuint64 value){
+            glUniformHandleui64ARB(glGetUniformLocation(ID, name.c_str()), value);
+        }
+
         /// @brief Sets a Uniform Matrix4 Float in the shader
         /// @param name Name of the Uniform
         /// @param value Value to be set
