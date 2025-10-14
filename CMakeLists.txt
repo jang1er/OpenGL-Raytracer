@@ -43,11 +43,18 @@ add_subdirectory(vendor/assimp)
 
 target_link_libraries(OpenGL_Raytracer OpenGL::GL glfw assimp)
 
-# copy ressources folder to build
-add_custom_target(copy_data
-    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
-    "${CMAKE_CURRENT_SOURCE_DIR}/ressources/"
-    "${CMAKE_BINARY_DIR}/ressources/"
-    COMMENT "Copying Data"
+# --- Copy ressources folder to build dir when they change ---
+file(GLOB_RECURSE RESOURCE_FILES
+    CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/ressources/*"
 )
+
+add_custom_target(copy_data ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/ressources"
+            "${CMAKE_BINARY_DIR}/ressources"
+    DEPENDS ${RESOURCE_FILES}
+    COMMENT "Copying Data (shaders, textures, etc.)"
+)
+
 add_dependencies(OpenGL_Raytracer copy_data)
